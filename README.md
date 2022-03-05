@@ -91,6 +91,12 @@ $tinygo version
 tinygo version 0.21.0 linux/amd64 (using go version go1.17 and LLVM version 11.1.0)
 ```
 
+後から Version を Upgrade しようとして、新しいバージョンで上書きされなかったので、消してから上の手順をすると上書きされました
+
+```
+rm /home/ludwig125/go/bin/tinygo
+```
+
 > If you are only interested in compiling TinyGo code for WebAssembly then you are now done with the installation.
 
 私は WebAssembly が使えればいいので、このページはこれで終了にします
@@ -194,7 +200,7 @@ $goexec 'http.ListenAndServe(`:8080`, http.FileServer(http.Dir(`.`)))'
 
 ![image](https://user-images.githubusercontent.com/18366858/150657152-3cf431ef-12c1-4495-a048-e62a61ff6a0f.png)
 
-### 付録
+### インストール不具合対応
 
 上述の`tinygo build -o main.wasm -target wasm main.go`ですが、
 最初私の環境では、以下の結果になってしまいました。
@@ -267,75 +273,8 @@ CGO_ENABLED="1"
 TINYGOROOT="/usr/local/lib/tinygo"
 ```
 
-以下、必要かわかりません。
+# 参考資料
 
-# Build from source
-
-https://tinygo.org/docs/guides/build/
-
-TinyGo は LLVM を使います。
-
-```
-git clone --recursive https://github.com/tinygo-org/tinygo.git
-cd tinygo
-```
-
-> Before copying the command below, please replace xxxxx with your distribution’s codename.
-
-```
-echo 'deb http://apt.llvm.org/xxxxx/ llvm-toolchain-xxxxx-11 main' | sudo tee /etc/apt/sources.list.d/llvm.list
-```
-
-以下のように置き換え =>
-
-```
-echo 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main' | sudo tee /etc/apt/sources.list.d/llvm.list
-```
-
-> After adding the apt repository for your distribution you may install the LLVM toolchain packages:
-
-```
-wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-sudo apt-get update
-sudo apt-get install clang-11 llvm-11-dev lld-11 libclang-11-dev
-```
-
-> After LLVM has been installed, installing TinyGo should be as easy as running the following command (cgo must be enabled so that the compile does not fail):
-
-```
-CGO_ENABLED=1 go install
-```
-
-https://tinygo.org/docs/guides/build/#with-a-self-built-llvm
-これ必要なのか定かではない
-あとのコマンドで以下が出たのでやっている
-
-> [~/go/src/github.com/ludwig125/tinygo_sample/tinygo/wasm-tinygo-hello] $make build
-> GOOS=js GOARCH=wasm tinygo build -target wasm -no-debug -o main.wasm
-> error: could not find wasm-opt, set the WASMOPT environment variable to override
-> make: \*\*\* [Makefile:2: build] エラー 1
-
-```
-sudo apt-get install build-essential git cmake ninja-build
-```
-
-https://tinygo.org/docs/guides/build/#additional-requirements
-
-> To be able to use TinyGo to build WebAssembly binaries, you will need to compile wasi-libc:
-
-```
-make wasi-libc
-```
-
-> hese command may need to be re-run after some updates in TinyGo.
-
-> There are also some extra tools you will need to install, depending on your operating system. These tools are gcc-avr, avr-libc, avrdude, and openocd. Check the additional requirements for your operating system:
-
-=>
-
-https://tinygo.org/docs/guides/webassembly/
-
-```
-cp $(tinygo env TINYGOROOT)/targets/wasm_exec.js .
-
-```
+https://qiita.com/kawamou/items/7c56827e1e9a4795c026
+https://text.baldanders.info/golang/webassembly-with-tinygo/
+https://www.andreagrandi.it/2020/10/23/getting-started-with-tinygo-webassembly/
